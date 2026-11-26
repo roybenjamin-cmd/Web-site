@@ -1,12 +1,13 @@
 # Web-site
 
-Boutique ODD : logo qui tourne en haut à gauche, menu latéral (trois barres) avec les collections et les filtres en dessous, panier et page de paiement.
+Boutique ODD : logo 3D qui tourne en haut à gauche, menu latéral (trois barres) avec les collections et les filtres en dessous, panier et page de paiement.
 
 ## Contenu
 
 - `index.html` — la page (boutique, panier, paiement)
 - `products.js` — **le catalogue** : catégories, couleurs du filtre, articles, prix, tailles, stock, photos
 - `script.js` — catégories, panier (gardé dans le navigateur), formulaire de paiement
+- `logo-3d.js` — le logo en 3D (WebGL, sans dépendance) ; réglages dans `index.html` : `data-thickness` (épaisseur), `data-speed` (tours/min), `data-tilt` (inclinaison)
 - `style.css` — la mise en page
 - `images/` — logo détouré et photos au format 4:5
 

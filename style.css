@@ -65,9 +65,27 @@ button {
 }
 
 .logo {
+  position: relative;
   display: block;
   width: 56px;
   height: 56px;
+}
+
+/* Logo 3D (logo-3d.js) : un peu plus grand que la case, car le moteur garde
+   de la marge pour que les branches de l'étoile ne sortent pas en tournant. */
+.logo-3d {
+  position: absolute;
+  inset: -8%;
+}
+
+/* Image de secours du moteur 3D (sans WebGL) : on garde plutôt le logo plat. */
+.logo-3d img {
+  display: none;
+}
+
+/* Une fois le logo 3D affiché, on cache le logo plat. */
+.logo:has(.logo-3d canvas) > img {
+  display: none;
 }
 
 @media (min-width: 720px) {
