@@ -1,11 +1,11 @@
 # Web-site
 
-Boutique ODD : logo qui tourne en haut à gauche, catégories, panier et page de paiement.
+Boutique ODD : logo qui tourne en haut à gauche, menu des collections et filtres sur le côté, panier et page de paiement.
 
 ## Contenu
 
 - `index.html` — la page (boutique, panier, paiement)
-- `products.js` — **le catalogue** : catégories, articles, prix, tailles, photos
+- `products.js` — **le catalogue** : catégories, couleurs du filtre, articles, prix, tailles, stock, photos
 - `script.js` — catégories, panier (gardé dans le navigateur), formulaire de paiement
 - `style.css` — la mise en page
 - `images/` — logo détouré et photos au format 4:5

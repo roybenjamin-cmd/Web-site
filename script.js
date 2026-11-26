@@ -10,6 +10,16 @@
   const plural = (n, word) => `${n} ${word}${n > 1 ? "s" : ""}`;
   const canHover = window.matchMedia("(hover: hover)").matches;
 
+  // ---------- Panneaux latéraux (panier, menu, filtres) ----------
+  const dialogs = [...document.querySelectorAll("dialog")];
+  const open = (d) => !d.open && d.showModal();
+  const closeAll = () => dialogs.forEach((d) => d.open && d.close());
+  dialogs.forEach((d) =>
+    d.addEventListener("click", (e) => {
+      if (e.target === d || e.target.closest("[data-close]")) d.close(); // clic à côté ou bouton fermer
+    })
+  );
+
   // ---------- Panier (gardé dans le navigateur) ----------
   const STORE = "odd-cart";
   let cart = [];
@@ -60,16 +70,129 @@
     return `<s><span class="sr-only">Prix régulier :</span> ${money(p.compareAt * qty)}</s> ${now}`;
   }
 
-  // ---------- Boutique ----------
-  const grid = $("#grid");
+  // ---------- Filtres ----------
+  const PRICE_TOP = Math.ceil(Math.max(...PRODUCTS.map((p) => p.price)) / 1000) * 10; // en dollars, arrondi à 10
+  const F = { avail: new Set(), color: new Set(), size: new Set(), min: 0, max: PRICE_TOP };
+  const AVAIL = [
+    { value: "in", label: "En stock" },
+    { value: "out", label: "En rupture de stock" },
+  ];
+  const usedColors = Object.keys(COLORS).filter((c) => PRODUCTS.some((p) => p.color === c));
+  const usedSizes = SIZE_ORDER.filter((s) => PRODUCTS.some((p) => p.sizes.includes(s)));
+  let currentCat = "tout";
 
-  function renderCategories(active) {
+  const inCategory = () => (currentCat === "tout" ? PRODUCTS : PRODUCTS.filter((p) => p.category === currentCat));
+
+  // skip = la facette à ignorer (pour calculer ses propres compteurs)
+  function matches(p, skip) {
+    if (skip !== "avail" && F.avail.size && !F.avail.has(p.available ? "in" : "out")) return false;
+    if (skip !== "color" && F.color.size && !F.color.has(p.color)) return false;
+    if (skip !== "size" && F.size.size && !p.sizes.some((s) => F.size.has(s))) return false;
+    const dollars = p.price / 100;
+    if (dollars < F.min || (F.max < PRICE_TOP && dollars > F.max)) return false;
+    return true;
+  }
+
+  const activeFilters = () =>
+    F.avail.size + F.color.size + F.size.size + (F.min > 0 || F.max < PRICE_TOP ? 1 : 0);
+
+  function buildFilters() {
+    $("#f-avail").innerHTML = AVAIL.map(
+      (o) => `<label class="opt-row"><input type="checkbox" data-facet="avail" value="${o.value}">
+        <span class="box" aria-hidden="true"></span><span>${o.label} <span class="n" data-count="avail:${o.value}"></span></span></label>`
+    ).join("");
+    $("#f-color").innerHTML = usedColors
+      .map(
+        (c) => `<label class="opt-row color-row"><input type="checkbox" data-facet="color" value="${esc(c)}">
+        <span class="swatch" style="background:${COLORS[c]}" aria-hidden="true"></span><span>${esc(c)} <span class="n" data-count="color:${esc(c)}"></span></span></label>`
+      )
+      .join("");
+    $("#f-size").innerHTML = usedSizes
+      .map(
+        (s) => `<label class="opt-row"><input type="checkbox" data-facet="size" value="${esc(s)}">
+        <span class="box" aria-hidden="true"></span><span>${esc(s)} <span class="n" data-count="size:${esc(s)}"></span></span></label>`
+      )
+      .join("");
+    for (const id of ["#price-min", "#price-max"]) $(id).max = PRICE_TOP;
+    syncPriceInputs();
+  }
+
+  function syncPriceInputs() {
+    $("#price-min").value = F.min;
+    $("#price-max").value = F.max;
+    $("#price-min-label").textContent = money(F.min * 100);
+    $("#price-max-label").textContent = money(F.max * 100);
+    $("#range-fill").style.left = `${(F.min / PRICE_TOP) * 100}%`;
+    $("#range-fill").style.right = `${100 - (F.max / PRICE_TOP) * 100}%`;
+  }
+
+  function updateFilterCounts() {
+    const list = inCategory();
+    const tally = (facet, test) => list.filter((p) => matches(p, facet) && test(p)).length;
+    document.querySelectorAll("[data-count]").forEach((el) => {
+      const [facet, value] = el.dataset.count.split(":");
+      const n =
+        facet === "avail"
+          ? tally("avail", (p) => (p.available ? "in" : "out") === value)
+          : facet === "color"
+            ? tally("color", (p) => p.color === value)
+            : tally("size", (p) => p.sizes.includes(value));
+      el.textContent = `(${n})`;
+      const input = el.closest("label").querySelector("input");
+      input.disabled = n === 0 && !input.checked;
+    });
+    const a = activeFilters();
+    $("#filter-count").textContent = a;
+    $("#filter-count").hidden = a === 0;
+  }
+
+  $("#filter-form").addEventListener("change", (e) => {
+    const facet = e.target.dataset.facet;
+    if (!facet) return;
+    e.target.checked ? F[facet].add(e.target.value) : F[facet].delete(e.target.value);
+    renderGrid();
+  });
+
+  $("#price-min").addEventListener("input", (e) => {
+    F.min = Math.min(Number(e.target.value), F.max);
+    syncPriceInputs();
+    renderGrid();
+  });
+  $("#price-max").addEventListener("input", (e) => {
+    F.max = Math.max(Number(e.target.value), F.min);
+    syncPriceInputs();
+    renderGrid();
+  });
+
+  function clearFilters() {
+    F.avail.clear();
+    F.color.clear();
+    F.size.clear();
+    F.min = 0;
+    F.max = PRICE_TOP;
+    document.querySelectorAll("#filter-form input[type=checkbox]").forEach((i) => (i.checked = false));
+    syncPriceInputs();
+    renderGrid();
+  }
+  $("#filter-clear").addEventListener("click", clearFilters);
+  $("#filter-open").addEventListener("click", () => open($("#filters")));
+  $("#filter-form").addEventListener("submit", (e) => e.preventDefault());
+
+  // ---------- Menu des collections ----------
+  function renderMenu() {
     $("#categories").innerHTML = CATEGORIES.map((c) => {
       const n = c.id === "tout" ? PRODUCTS.length : PRODUCTS.filter((p) => p.category === c.id).length;
-      const current = c.id === active ? ' aria-current="page"' : "";
-      return `<li><a href="#${c.id}"${current}>${esc(c.label)} <span class="n">${n}</span></a></li>`;
+      const current = c.id === currentCat ? ' aria-current="page"' : "";
+      return `<li><a href="#${c.id}" data-close${current}><span>${esc(c.label)}</span><span class="n">${n}</span></a></li>`;
     }).join("");
   }
+  $("#menu-open").addEventListener("click", () => {
+    renderMenu();
+    open($("#menu"));
+  });
+
+  // ---------- Boutique ----------
+  const grid = $("#grid");
 
   function productCard(p) {
     const sizes = p.sizes
@@ -95,29 +218,47 @@
             <button type="button" data-set="back" aria-pressed="false">Arrière</button>
           </div>
         </div>
-        <fieldset class="sizes">
-          <legend class="sr-only">Taille</legend>
-          ${sizes}
-        </fieldset>
-        <p class="size-error" aria-live="polite"></p>
-        <button class="btn btn-block add" type="button">Ajouter au panier</button>
+        ${
+          p.available
+            ? `<fieldset class="sizes"><legend class="sr-only">Taille</legend>${sizes}</fieldset>
+               <p class="size-error" aria-live="polite"></p>
+               <button class="btn btn-block add" type="button">Ajouter au panier</button>`
+            : `<button class="btn btn-block add" type="button" disabled>En rupture de stock</button>`
+        }
       </article>`;
   }
 
   function renderShop(cat) {
-    const c = CATEGORIES.find((x) => x.id === cat);
-    const list = cat === "tout" ? PRODUCTS : PRODUCTS.filter((p) => p.category === cat);
+    currentCat = cat;
+    $("#shop-title").textContent = CATEGORIES.find((x) => x.id === cat).label;
+    renderMenu();
+    renderGrid();
+  }
+
+  function renderGrid() {
+    const all = inCategory();
+    const list = all.filter((p) => matches(p));
+    const label = CATEGORIES.find((x) => x.id === currentCat).label;
     $("#shop-count").textContent = plural(list.length, "article");
-    renderCategories(cat);
-    grid.innerHTML = list.length
-      ? list.map(productCard).join("")
-      : `<div class="empty">
+    $("#filter-apply").textContent = `Voir ${plural(list.length, "produit")}`;
+    updateFilterCounts();
+    if (list.length) grid.innerHTML = list.map(productCard).join("");
+    else if (!all.length)
+      grid.innerHTML = `<div class="empty">
            <p class="empty-title">Bientôt disponible</p>
-           <p class="muted">Aucun article dans « ${esc(c.label)} » pour l'instant.</p>
+           <p class="muted">Aucun article dans « ${esc(label)} » pour l'instant.</p>
            <a class="btn" href="#tout">Voir toutes les collections</a>
+         </div>`;
+    else
+      grid.innerHTML = `<div class="empty">
+           <p class="empty-title">Aucun résultat</p>
+           <p class="muted">Aucun article ne correspond à ces filtres.</p>
+           <button class="btn" type="button" data-clear-filters>Tout effacer</button>
          </div>`;
     grid.querySelectorAll(".product").forEach(wireCard);
   }
+
+  grid.addEventListener("click", (e) => e.target.closest("[data-clear-filters]") && clearFilters());
 
   function wireCard(card) {
     const media = card.querySelector(".product-media");
@@ -134,6 +275,7 @@
     }
 
     const error = card.querySelector(".size-error");
+    if (!error) return; // rupture de stock
     card.querySelectorAll(".sizes input").forEach((i) => i.addEventListener("change", () => (error.textContent = "")));
     card.querySelector(".add").addEventListener("click", () => {
       const picked = card.querySelector(".sizes input:checked");
@@ -198,15 +340,11 @@
 
   function openCart() {
     renderCart();
-    if (!drawer.open) drawer.showModal();
+    open(drawer);
   }
-  const closeCart = () => drawer.open && drawer.close();
 
   $("#cart-open").addEventListener("click", openCart);
-  $("#cart-close").addEventListener("click", closeCart);
-  drawer.querySelectorAll("[data-close]").forEach((b) => b.addEventListener("click", closeCart));
-  drawer.addEventListener("click", (e) => e.target === drawer && closeCart()); // clic à côté
-  $("#to-checkout").addEventListener("click", closeCart);
+  $("#to-checkout").addEventListener("click", () => drawer.close());
   $("#summary-edit").addEventListener("click", openCart);
 
   // ---------- Paiement ----------
@@ -273,7 +411,7 @@
   function route() {
     const h = decodeURIComponent(location.hash.slice(1));
     const view = h === "paiement" ? "checkout" : "shop";
-    closeCart();
+    closeAll();
     $("#shop").hidden = view !== "shop";
     $("#checkout").hidden = view !== "checkout";
     if (view === "shop") renderShop(CATEGORIES.some((c) => c.id === h) ? h : "tout");
@@ -283,6 +421,7 @@
   }
   window.addEventListener("hashchange", route);
 
+  buildFilters();
   renderBadge();
   renderCart();
   route();
