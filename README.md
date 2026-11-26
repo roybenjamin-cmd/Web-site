@@ -1,6 +1,6 @@
 # Web-site
 
-Boutique ODD : logo qui tourne en haut à gauche, menu des collections et filtres sur le côté, panier et page de paiement.
+Boutique ODD : logo qui tourne en haut à gauche, menu latéral (trois barres) avec les collections et les filtres en dessous, panier et page de paiement.
 
 ## Contenu
 

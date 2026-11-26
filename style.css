@@ -1014,7 +1014,7 @@ body:has(.drawer[open]) {
 }
 
 @media (max-width: 420px) {
-  .menu-button span {
+  .menu-button .menu-label-text {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -1309,4 +1309,48 @@ body:has(.drawer[open]) {
 .btn[disabled] {
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+/* ---------- Menu : collections + filtres dans le même panneau ---------- */
+
+.menu-button {
+  position: relative;
+}
+
+@media (max-width: 420px) {
+  .menu-button .filter-count {
+    position: absolute;
+    top: 2px;
+    left: 14px;
+  }
+}
+
+.menu-scroll {
+  flex: 1;
+  padding: 0 20px 24px;
+  overflow-y: auto;
+}
+
+.menu-scroll .menu-list {
+  padding: 0;
+}
+
+.menu-scroll .filter-body {
+  flex: none;
+  padding: 0;
+  overflow: visible;
+}
+
+.menu-section {
+  margin: 24px 0 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--text);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.toolbar .link {
+  font-size: 13px;
 }

@@ -144,6 +144,7 @@
     const a = activeFilters();
     $("#filter-count").textContent = a;
     $("#filter-count").hidden = a === 0;
+    $("#toolbar-clear").hidden = a === 0;
   }
 
   $("#filter-form").addEventListener("change", (e) => {
@@ -175,7 +176,11 @@
     renderGrid();
   }
   $("#filter-clear").addEventListener("click", clearFilters);
-  $("#filter-open").addEventListener("click", () => open($("#filters")));
+  $("#toolbar-clear").addEventListener("click", clearFilters);
+  // « Voir N produits » : ferme le menu et revient à la boutique si on était au paiement
+  $("#filter-apply").addEventListener("click", () => {
+    if (!$("#checkout").hidden) location.hash = currentCat;
+  });
   $("#filter-form").addEventListener("submit", (e) => e.preventDefault());
 
   // ---------- Menu des collections ----------
