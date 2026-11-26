@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ODD — Collection</title>
+  <meta name="description" content="ODD — collection : pantalon cargo et veste imperméable.">
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <a class="logo" href="./" aria-label="ODD — accueil">
+      <img src="images/logo.png" alt="Logo ODD" width="256" height="256">
+    </a>
+    <nav class="nav" aria-label="Navigation principale">
+      <a href="#collection">Collection</a>
+    </nav>
+  </header>
+
+  <main id="collection" class="collection">
+    <div class="collection-head">
+      <h1>Collection</h1>
+      <p class="count">2 articles</p>
+    </div>
+
+    <div class="grid">
+
+      <article class="product" data-view="front">
+        <button class="product-media" type="button" aria-label="Voir l'autre côté du pantalon cargo">
+          <img class="front" src="images/pantalon-avant.jpg" alt="Pantalon cargo noir, vue de face" width="1000" height="1250">
+          <img class="back" src="images/pantalon-arriere.jpg" alt="Pantalon cargo noir, vue de dos" width="1000" height="1250" loading="lazy">
+        </button>
+        <div class="product-info">
+          <div>
+            <h2>Pantalon cargo</h2>
+            <p class="meta">Noir</p>
+          </div>
+          <div class="views" role="group" aria-label="Choisir la vue">
+            <button type="button" data-set="front" aria-pressed="true">Avant</button>
+            <button type="button" data-set="back" aria-pressed="false">Arrière</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="product" data-view="front">
+        <button class="product-media" type="button" aria-label="Voir l'autre côté de la veste imperméable">
+          <img class="front" src="images/veste-avant.jpg" alt="Veste imperméable noire à capuche, vue de face" width="1000" height="1250">
+          <img class="back" src="images/veste-arriere.jpg" alt="Veste imperméable noire à capuche, vue de dos" width="1000" height="1250" loading="lazy">
+        </button>
+        <div class="product-info">
+          <div>
+            <h2>Veste imperméable</h2>
+            <p class="meta">Noir</p>
+          </div>
+          <div class="views" role="group" aria-label="Choisir la vue">
+            <button type="button" data-set="front" aria-pressed="true">Avant</button>
+            <button type="button" data-set="back" aria-pressed="false">Arrière</button>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>© <span id="year">2026</span> ODD</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
