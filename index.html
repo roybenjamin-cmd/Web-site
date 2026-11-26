@@ -4,78 +4,186 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ODD — Collection</title>
-  <meta name="description" content="ODD — collection : ODD SNOWPANTS V2 et ODD JACKET V2.">
+  <meta name="description" content="ODD — snowpants, jackets, jeans, beanies et belts.">
   <link rel="icon" type="image/png" href="images/favicon.png">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
   <header class="site-header">
-    <a class="logo" href="./" aria-label="ODD — accueil">
+    <a class="logo" href="#tout" aria-label="ODD — accueil">
       <img src="images/logo.png" alt="Logo ODD" width="256" height="256">
     </a>
-    <nav class="nav" aria-label="Navigation principale">
-      <a href="#collection">Collection</a>
-    </nav>
+    <div class="header-right">
+      <nav class="nav" aria-label="Navigation principale">
+        <a href="#tout">Collection</a>
+      </nav>
+      <button class="cart-button" type="button" id="cart-open" aria-label="Ouvrir le panier">
+        <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+          <path d="M5 8h14l-1.2 12.2a1 1 0 0 1-1 .8H7.2a1 1 0 0 1-1-.8L5 8Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+          <path d="M8.5 10V7a3.5 3.5 0 0 1 7 0v3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <span class="cart-count" id="cart-count" hidden>0</span>
+      </button>
+    </div>
   </header>
 
-  <main id="collection" class="collection">
+  <!-- ========== Boutique ========== -->
+  <main id="shop" class="collection">
     <div class="collection-head">
       <h1>Collection</h1>
-      <p class="count">2 articles</p>
+      <p class="count" id="shop-count"></p>
     </div>
 
-    <div class="grid">
+    <nav class="categories" aria-label="Catégories">
+      <ul id="categories"></ul>
+    </nav>
 
-      <article class="product" data-view="front">
-        <button class="product-media" type="button" aria-label="Voir l'autre côté du ODD SNOWPANTS V2">
-          <img class="front" src="images/pantalon-avant.jpg" alt="ODD SNOWPANTS V2 noir, vue de face" width="1000" height="1250">
-          <img class="back" src="images/pantalon-arriere.jpg" alt="ODD SNOWPANTS V2 noir, vue de dos" width="1000" height="1250" loading="lazy">
-        </button>
-        <div class="product-info">
-          <div>
-            <h2>ODD SNOWPANTS&nbsp;V2</h2>
-            <p class="meta">Noir</p>
-            <p class="price">
-              <s><span class="sr-only">Prix régulier :</span> 199,99 $</s>
-              <span class="sale"><span class="sr-only">Prix réduit :</span> 179,99 $</span>
-            </p>
-          </div>
-          <div class="views" role="group" aria-label="Choisir la vue">
-            <button type="button" data-set="front" aria-pressed="true">Avant</button>
-            <button type="button" data-set="back" aria-pressed="false">Arrière</button>
-          </div>
-        </div>
-      </article>
-
-      <article class="product" data-view="front">
-        <button class="product-media" type="button" aria-label="Voir l'autre côté de la ODD JACKET V2">
-          <img class="front" src="images/veste-avant.jpg" alt="ODD JACKET V2 noire à capuche, vue de face" width="1000" height="1250">
-          <img class="back" src="images/veste-arriere.jpg" alt="ODD JACKET V2 noire à capuche, vue de dos" width="1000" height="1250" loading="lazy">
-        </button>
-        <div class="product-info">
-          <div>
-            <h2>ODD JACKET&nbsp;V2</h2>
-            <p class="meta">Noir</p>
-            <p class="price">
-              <s><span class="sr-only">Prix régulier :</span> 189,99 $</s>
-              <span class="sale"><span class="sr-only">Prix réduit :</span> 159,99 $</span>
-            </p>
-          </div>
-          <div class="views" role="group" aria-label="Choisir la vue">
-            <button type="button" data-set="front" aria-pressed="true">Avant</button>
-            <button type="button" data-set="back" aria-pressed="false">Arrière</button>
-          </div>
-        </div>
-      </article>
-
-    </div>
+    <div class="grid" id="grid"></div>
   </main>
+
+  <!-- ========== Paiement ========== -->
+  <section id="checkout" class="checkout" hidden aria-labelledby="checkout-title">
+    <a class="back-link" href="#tout">← Continuer les achats</a>
+    <h1 id="checkout-title">Paiement</h1>
+
+    <div class="checkout-empty" id="checkout-empty" hidden>
+      <p>Votre panier est vide.</p>
+      <a class="btn" href="#tout">Voir la collection</a>
+    </div>
+
+    <div class="checkout-grid" id="checkout-grid">
+      <form class="checkout-form" id="checkout-form" novalidate>
+
+        <fieldset>
+          <legend>1. Contact</legend>
+          <div class="field">
+            <label for="email">Courriel</label>
+            <input id="email" name="email" type="email" autocomplete="email" required>
+          </div>
+          <div class="field">
+            <label for="phone">Téléphone <span class="opt">(facultatif)</span></label>
+            <input id="phone" name="phone" type="tel" autocomplete="tel">
+          </div>
+          <label class="check">
+            <input type="checkbox" name="news"> Recevoir les nouveautés ODD par courriel
+          </label>
+        </fieldset>
+
+        <fieldset>
+          <legend>2. Adresse de livraison</legend>
+          <div class="field">
+            <label for="country">Pays</label>
+            <select id="country" name="country" autocomplete="country-name" required>
+              <option>Canada</option>
+              <option>États-Unis</option>
+              <option>France</option>
+              <option>Belgique</option>
+              <option>Suisse</option>
+              <option>Autre</option>
+            </select>
+          </div>
+          <div class="row">
+            <div class="field">
+              <label for="first-name">Prénom</label>
+              <input id="first-name" name="firstName" autocomplete="given-name" required>
+            </div>
+            <div class="field">
+              <label for="last-name">Nom</label>
+              <input id="last-name" name="lastName" autocomplete="family-name" required>
+            </div>
+          </div>
+          <div class="field">
+            <label for="address">Adresse</label>
+            <input id="address" name="address" autocomplete="address-line1" required>
+          </div>
+          <div class="field">
+            <label for="address2">Appartement, suite <span class="opt">(facultatif)</span></label>
+            <input id="address2" name="address2" autocomplete="address-line2">
+          </div>
+          <div class="row row-3">
+            <div class="field">
+              <label for="city">Ville</label>
+              <input id="city" name="city" autocomplete="address-level2" required>
+            </div>
+            <div class="field">
+              <label for="region">Province / État</label>
+              <input id="region" name="region" autocomplete="address-level1" required>
+            </div>
+            <div class="field">
+              <label for="postal">Code postal</label>
+              <input id="postal" name="postal" autocomplete="postal-code" required>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>3. Paiement</legend>
+          <div class="pay-options">
+            <label class="pay-option">
+              <input type="radio" name="method" value="card" checked>
+              <span class="pay-label">Carte de crédit ou débit</span>
+              <span class="badges"><span>VISA</span><span>MC</span><span>AMEX</span></span>
+            </label>
+            <label class="pay-option">
+              <input type="radio" name="method" value="paypal">
+              <span class="pay-label">PayPal</span>
+            </label>
+            <label class="pay-option">
+              <input type="radio" name="method" value="wallet">
+              <span class="pay-label">Apple Pay / Google Pay</span>
+            </label>
+          </div>
+          <p class="secure">
+            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8.5 10V7.5a3.5 3.5 0 0 1 7 0V10" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+            Les informations de carte sont saisies sur la page sécurisée du prestataire de paiement : elles ne passent jamais par ce site.
+          </p>
+        </fieldset>
+
+        <p class="form-error" id="form-error" role="alert" hidden></p>
+        <button class="btn btn-block" type="submit" id="pay-button">Payer</button>
+        <div class="notice" id="pay-notice" role="status" hidden></div>
+      </form>
+
+      <aside class="summary" aria-labelledby="summary-title">
+        <div class="summary-head">
+          <h2 id="summary-title">Récapitulatif</h2>
+          <button class="link" type="button" id="summary-edit">Modifier</button>
+        </div>
+        <ul class="summary-items" id="summary-items"></ul>
+        <dl class="totals" id="summary-totals"></dl>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ========== Panier ========== -->
+  <dialog class="drawer" id="cart" aria-labelledby="cart-title">
+    <div class="drawer-inner">
+      <div class="drawer-head">
+        <h2 id="cart-title">Panier</h2>
+        <button class="icon-btn" type="button" id="cart-close" aria-label="Fermer le panier">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <ul class="cart-items" id="cart-items"></ul>
+      <div class="cart-empty" id="cart-empty" hidden>
+        <p>Votre panier est vide.</p>
+        <button class="btn" type="button" data-close>Voir la collection</button>
+      </div>
+      <div class="drawer-foot" id="cart-foot">
+        <div class="line"><span>Sous-total</span><strong id="cart-subtotal"></strong></div>
+        <p class="muted">Taxes et livraison calculées au paiement.</p>
+        <a class="btn btn-block" href="#paiement" id="to-checkout">Passer au paiement</a>
+        <button class="link center" type="button" data-close>Continuer les achats</button>
+      </div>
+    </div>
+  </dialog>
 
   <footer class="site-footer">
     <p>© <span id="year">2026</span> ODD</p>
   </footer>
 
+  <script src="products.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
