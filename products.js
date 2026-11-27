@@ -30,7 +30,7 @@ const SIZE_ORDER = ["XS", "S", "M", "L", "XL", "XXL", "2XL", "XXXL", "3XL", "Uni
 const PRODUCTS = [
   {
     id: "snowpants-v2",
-    name: "ODD SNOWPANTS V2",
+    name: "ODD SNOWPANTS V2 (black)",
     category: "snowpants",
     color: "Noir",
     price: 17999,
@@ -54,7 +54,7 @@ const PRODUCTS = [
   },
   {
     id: "jacket-v2",
-    name: "ODD JACKET V2",
+    name: "ODD JACKET V2 (black)",
     category: "jacket",
     color: "Noir",
     price: 15999,
