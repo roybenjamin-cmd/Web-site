@@ -24,7 +24,7 @@ const COLORS = {
 };
 
 // Ordre d'affichage des grandeurs dans le filtre.
-const SIZE_ORDER = ["XS", "S", "M", "L", "XL", "XXL", "2XL", "XXXL", "3XL"];
+const SIZE_ORDER = ["XS", "S", "M", "L", "XL", "XXL", "2XL", "XXXL", "3XL", "Unique"];
 
 const PRODUCTS = [
   {
@@ -62,5 +62,17 @@ const PRODUCTS = [
     available: true,
     front: "images/hoodie-staysodd-avant.jpg",
     back: "images/hoodie-staysodd-arriere.jpg",
+  },
+  {
+    id: "tactical-belt",
+    name: "Tactical belt",
+    category: "belts",
+    color: "Noir",
+    price: 4499,
+    compareAt: 5999,
+    sizes: ["Unique"],
+    available: true,
+    front: "images/ceinture-staysodd-portee.jpg",
+    back: "images/ceinture-staysodd-roulee.jpg",
   },
 ];
