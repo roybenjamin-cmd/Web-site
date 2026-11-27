@@ -18,7 +18,7 @@ Ouvrir `index.html` dans un navigateur — aucune installation nécessaire.
 ## Ajouter un article
 
 Dans `products.js`, copier un bloc de `PRODUCTS` et changer `id`, `name`, `category`
-(`snowpants`, `jacket`, `jeans`, `beanies` ou `belts`), les prix en cents
+(`snowpants`, `jacket`, `hoodies`, `jeans`, `beanies` ou `belts`), les prix en cents
 (`17999` = 179,99 $ ; `compareAt` = ancien prix barré) et les deux photos.
 
 ## Paiement
