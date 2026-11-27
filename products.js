@@ -16,6 +16,7 @@ const CATEGORIES = [
 const COLORS = {
   Beige: "#e8dab2",
   Blanc: "#ffffff",
+  "Brun clair": "#b07822",
   Marine: "#22228a",
   Marron: "#8f5a3a",
   Multicolore: "conic-gradient(#e4472f, #f2c230, #3bb273, #2f6fe4, #9b4fc6, #e4472f)",
@@ -38,6 +39,18 @@ const PRODUCTS = [
     available: true,
     front: "images/pantalon-avant.jpg",
     back: "images/pantalon-arriere.jpg",
+  },
+  {
+    id: "snowpants-v2-light-brown",
+    name: "ODD SNOWPANTS V2 (light brown)",
+    category: "snowpants",
+    color: "Brun clair",
+    price: 17999,
+    compareAt: 19999,
+    sizes: ["S", "M", "L", "XL"],
+    available: true,
+    front: "images/snowpants-brun-avant.jpg",
+    back: "images/snowpants-brun-arriere.jpg",
   },
   {
     id: "jacket-v2",
