@@ -65,7 +65,7 @@ const PRODUCTS = [
   },
   {
     id: "tactical-belt",
-    name: "Tactical belt",
+    name: "“staysodd” tactical belts (black)",
     category: "belts",
     color: "Noir",
     price: 4499,
